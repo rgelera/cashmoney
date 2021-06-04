@@ -7,7 +7,25 @@ def calculate_coins(coin_amount, change)
   return coins, change
 end
 
+def round_cents(cents)
+  if cents % 5 == 0
+    return cents 
+  else
+    return (cents.to_f / 5).round * 5
+  end
+end
 
+def output_coins(coin_type, count)
+  if count > 1 # plural coins
+    "#{count} #{coin_type}s"
+  else # will be 1
+    "1 #{coin_type}"
+  end
+end
+
+def build_output(coin_count)
+  
+end
 
 ### START PROGRAM
 
@@ -20,7 +38,7 @@ change = gets.to_f
 end until change.to_s =~ /^(([1-9]\d{0,7})|0)(\.\d{1,2})$/
 
 # work with cents
-change = (change * 100).to_i
+change = round_cents((change * 100).to_i)
 
 coin_count = Hash.new(0)
 coin_types = {
