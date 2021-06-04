@@ -15,16 +15,30 @@ def round_cents(cents)
   end
 end
 
-def output_coins(coin_type, count)
+def output_coins(type, count)
   if count > 1 # plural coins
-    "#{count} #{coin_type}s"
+    "#{count} #{type}s"
   else # will be 1
-    "1 #{coin_type}"
+    "1 #{type}"
   end
 end
 
 def build_output(coin_count)
-  
+  if coin_count.size == 1
+    return output_coins(coin_count.keys.first, coin_count.values.first)
+  end
+
+  # ruby hashes are ordered in ruby >1.9
+  output = ""
+  coin_count.each do |type, count|
+    unless coin_count.keys.last == type
+      output += output_coins(type, count) + ", "
+    else
+      # last key
+      output += "and " + output_coins(type, count)
+    end
+  end
+  output
 end
 
 ### START PROGRAM
@@ -40,7 +54,6 @@ end until change.to_s =~ /^(([1-9]\d{0,7})|0)(\.\d{1,2})$/
 # work with cents
 change = round_cents((change * 100).to_i)
 
-coin_count = Hash.new(0)
 coin_types = {
   :toonie => 200,
   :loonie => 100,
@@ -48,15 +61,21 @@ coin_types = {
   :dime => 10,
   :nickel => 5
 }
+coin_count = Hash.new(0)
 total_coins = 0
 
 coin_types.each do |type, value|
   count, change = calculate_coins(value, change)
-  coin_count[type] += count
-  total_coins += count
+  if count > 0
+    coin_count[type] += count
+    total_coins += count
+  end
 end
 
-puts "You need to dispense #{}."
-#puts "You don't need to dispense change."
+unless total_coins == 0
+  puts "You need to dispense #{build_output(coin_count)}."
+else
+  puts "You don't need to dispense change."
+end
 puts "Total coins: #{total_coins}"
 
