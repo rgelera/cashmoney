@@ -45,7 +45,10 @@ end
 
 begin
 print "How much change is owed? "
-change = gets.to_f
+change = gets.chomp
+change = Float(change)
+rescue ArgumentError
+  retry
 # to_f changes strings to 0.0 and also removes strings if mixed with numbers
 # doesn't match business requirements
 # alternative is to use Float class and validate it
